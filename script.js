@@ -1,56 +1,49 @@
-console.log("Hello World!!");
-
 // HTML Elements
 const resetButton = document.querySelector('#reset');
 const currentPlayer = document.querySelector('#current-player');
-const square = document.querySelector('.square');
 const squares = document.querySelectorAll('.square');
 
-// Tracking Variables
-let counter = 0;
-
-// Functions
-function count() {
-  counter = counter + 1;
-  console.log('Count: ' + counter);
+// How can we simplify the code by only using the current player?
+  // Check the current player
+  // if the current player is X
+    // switch the current player text content to O
+  // else the current player is O
+    // Change the current player to X
+function switchPlayer() {
+  if (currentPlayer.textContent === 'X') {
+    currentPlayer.textContent = 'O';
+  } else {
+    currentPlayer.textContent = 'X';
+  }
 }
 
-// 2. Create a function to change the Text to an X
-function changeToX() {
-  square.textContent = 'X';
-  currentPlayer.textContent = 'O';
-}
-
-// Change to 0
-function changeToO() {
-  square.textContent = '0'
-  currentPlayer.textContent = 'X';
-}
-
-// Change SquareValue, depending on what's inside
-// function changeSquareValue(event) {
-//   let square = event.target;
-//   let squareValue = square.textContent;
-//   if (squareValue === 'X') {
-//     changeToO();
-//   } else {
-//     changeToX();
-//   }
-// }
-//
-function changeSquare(event) {
-  console.log('Click event:', event)
+// How can we use the currentPlayer and switchPlayer function to simplify our code?
+function playTurn(event) {
+  // Get the div that was clicked with the event target
   const square = event.target;
-  console.log('Square', square);
-  square.textContent = 'X';
+  console.log('Event Square:', square);
+
+  // If the square text content is empty the play the current player
+    // SET THE CLICKED SQUARE's TEXT CONTENT TO CURRENT PLAYER
+  if (square.textContent === '') {
+    square.textContent = currentPlayer.textContent;
+  }
+    // Use the switch player function
+  switchPlayer()
+  console.log(switchPlayer)
+  console.log(currentPlayer)
 }
 
 // Event Listeners
-resetButton.addEventListener('click', count);
-// squares.addEventListener('click', changeSquareValue);
-
-
-
 for (const square of squares) {
-  square.addEventListener('click', changeSquare)
+  square.addEventListener('click', playTurn)
 }
+
+function resetGame() {
+    for (const square of squares) {
+        square.textContent = "";
+        currentPlayer.textContent = "X";
+    }
+}
+
+resetButton.addEventListener("click", resetGame)
