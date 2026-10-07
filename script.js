@@ -2,13 +2,20 @@
 const resetButton = document.querySelector('#reset');
 const currentPlayer = document.querySelector('#current-player');
 const squares = document.querySelectorAll('.square');
+const playerWon = document.querySelector('#player-won');
+let gameOver = false;
 
-// How can we simplify the code by only using the current player?
-  // Check the current player
-  // if the current player is X
-    // switch the current player text content to O
-  // else the current player is O
-    // Change the current player to X
+const winningLines = [
+  [0, 1, 2],
+  [2, 4, 6],
+  [0, 4, 8],
+  [1, 4, 7],
+  [6, 7, 8],
+  [3, 4, 5],
+  [0, 3, 6],
+  [2, 5, 8],
+];
+
 function switchPlayer() {
   if (currentPlayer.textContent === 'X') {
     currentPlayer.textContent = 'O';
@@ -17,33 +24,46 @@ function switchPlayer() {
   }
 }
 
-// How can we use the currentPlayer and switchPlayer function to simplify our code?
-function playTurn(event) {
-  // Get the div that was clicked with the event target
-  const square = event.target;
-  console.log('Event Square:', square);
+function checkWinner() {
+  for (const line of winningLines) {
+    const first = squares[line[0]].textContent;
+    const second = squares[line[1]].textContent;
+    const third = squares[line[2]].textContent;
 
-  // If the square text content is empty the play the current player
-    // SET THE CLICKED SQUARE's TEXT CONTENT TO CURRENT PLAYER
-  if (square.textContent === '') {
-    square.textContent = currentPlayer.textContent;
+    if (first !== '' && first === second && first === third) {
+      playerWon.textContent = `${first} Won!!`;
+      gameOver = true; 
+      return;
+    }
   }
-    // Use the switch player function
-  switchPlayer()
-  console.log(switchPlayer)
-  console.log(currentPlayer)
 }
 
-// Event Listeners
-for (const square of squares) {
-  square.addEventListener('click', playTurn)
+function playTurn(event) {
+  const square = event.target;
+
+  if (square.textContent !== '' || gameOver) {
+    return;
+  }
+
+  square.textContent = currentPlayer.textContent;
+  checkWinner();
+
+  if (!gameOver) {
+    switchPlayer();
+  }
 }
 
 function resetGame() {
-    for (const square of squares) {
-        square.textContent = "";
-        currentPlayer.textContent = "X";
-    }
+  for (const square of squares) {
+    square.textContent = '';
+  }
+  playerWon.textContent = '';
+  currentPlayer.textContent = 'X';
+  gameOver = false; 
 }
 
-resetButton.addEventListener("click", resetGame)
+for (const square of squares) {
+  square.addEventListener('click', playTurn);
+}
+
+resetButton.addEventListener('click', resetGame);
